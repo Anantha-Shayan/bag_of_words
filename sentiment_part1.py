@@ -18,10 +18,6 @@ train_df = train_df.drop(columns=['id'])
 
 value_counts = train_df['sentiment'].value_counts()
 print(value_counts) # data is balanced
-
-test_df = pd.read_csv('testData.tsv', sep='\t')
-test_df = test_df.drop(columns=['id'])
-
 # plt.figure(figsize=(8, 6))
 # plt.bar(value_counts.index, value_counts.values)
 # plt.xlabel('Sentiment')
@@ -29,6 +25,9 @@ test_df = test_df.drop(columns=['id'])
 # plt.title('Sentiment Distribution')
 # plt.xticks(rotation=0)
 # plt.show()
+
+test_df = pd.read_csv('testData.tsv', sep='\t')
+test_df = test_df.drop(columns=['id'])
 
 
 """PRE PROCESSING"""
