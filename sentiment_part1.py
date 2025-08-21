@@ -80,3 +80,6 @@ def pre_processing(df):
 
     df['lemmatized'] = df['tokenized'].apply(lemmatize_tokens)
     print(df[['review', 'tokenized', 'lemmatized']].head())
+    return df
+train_df = pre_processing(train_df)
+test_df = pre_processing(test_df)
