@@ -9,7 +9,7 @@ from nltk.corpus import wordnet
 from textblob import TextBlob
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
-
+from sklearn.linear_model import LogisticRegression
 
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -116,7 +116,7 @@ y_train = train_df['sentiment']
 def fnc_classification_all_model(x,y):
     from sklearn.naive_bayes import BernoulliNB
     from sklearn.naive_bayes import MultinomialNB
-    from sklearn.svm import SVC
+    from sklearn.svm import LinearSVC
     from sklearn.neighbors import KNeighborsClassifier
     from sklearn.tree import DecisionTreeClassifier
     from sklearn.ensemble import RandomForestClassifier
@@ -130,7 +130,7 @@ def fnc_classification_all_model(x,y):
 
     b=BernoulliNB()
     m=MultinomialNB()
-    s=SVC()
+    s=LinearSVC()
     k=KNeighborsClassifier()
     D=DecisionTreeClassifier()
     R=RandomForestClassifier()
@@ -142,7 +142,7 @@ def fnc_classification_all_model(x,y):
 
 
     algos=[b,m,s,k,D,R,Log,XGB,G]
-    algo_names=['BernoulliNB','MultinomialNB','SVC','KNeighborsClassifier','DecisionTreeClassifier','RandomForestClassifier','LogisticRegression','XGBClassifier','GradientBoostingClassifier']
+    algo_names=['BernoulliNB','MultinomialNB','LinearSVC','KNeighborsClassifier','DecisionTreeClassifier','RandomForestClassifier','LogisticRegression','XGBClassifier','GradientBoostingClassifier']
 
     accuracy_scored=[]
     precision_scored=[]
@@ -172,19 +172,17 @@ print(fnc_classification_all_model(x_train,y_train))
 
 
 """MODEL TRAINING"""
+from sklearn.linear_model import LogisticRegression
 
-from sklearn.svm import SVC
-model = SVC()
+model = LogisticRegression()
 model.fit(x_train, y_train)
 test_df['lemmatized_text'] = test_df['lemmatized'].apply(lambda tokens: ' '.join(tokens))
-vectorizer = TfidfVectorizer(max_features=5000,
-    ngram_range=(1,2),
-    stop_words='english'
-)
-x_test = vectorizer.fit_transform(test_df['lemmatized_text'])
+x_test = vectorizer.transform(test_df['lemmatized_text'])
 y_pred = model.predict(x_test)
 
+# print(y_pred)
 submission=pd.DataFrame()
 submission["id"]=sample_submission["id"]
 submission["sentiment"]=y_pred.astype(int)
 submission.head()
+submission.to_csv("submission.csv", index=False)
