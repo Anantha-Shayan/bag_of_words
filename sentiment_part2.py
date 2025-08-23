@@ -14,7 +14,6 @@ unlabelled_df = pd.DataFrame(unlabelled_train)
 unlabelled_df = unlabelled_df.drop(columns=['id'])
 
 labeled_df = pd.read_csv("labeledTrainData.tsv", sep="\t")
-labeled_df = preprocessing(labeled_df)
 
 test_df = pd.read_csv('testData.tsv', sep='\t')
 
@@ -40,6 +39,8 @@ def preprocessing(df): #without lemmetization for word2vec
 unlabelled_df = preprocessing(unlabelled_df)
 print(unlabelled_df.head())
 
+
+"""FEATURE EXTRACTION USING Word2Vec"""
 w2v_model = Word2Vec(
     sentences=unlabelled_df['tokenized'],
     vector_size=300,   # embedding dimension
@@ -61,7 +62,7 @@ def review_to_vector(tokens, model):
     #Word2Vec gives vectors for words.But classifier needs a single vector per review.Reviews have variable length (10 words, 200 words, 1000 words).
     #So we need a way to turn all those word vectors into one fixed-size vector.(No matter how long the review, the average is always a 300-dim vector (if embeddings are 300-dim).)
 
-
+labeled_df = preprocessing(labeled_df)
 X = np.array([review_to_vector(tokens, w2v_model) for tokens in labeled_df["tokenized"].values]) 
 y = labeled_df["sentiment"].values
 
